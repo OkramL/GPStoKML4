@@ -19,7 +19,7 @@ public class GPStoKML4 {
     public static void main(String[] args) {
         // TODO code application logic here
         final long startTime = System.currentTimeMillis();
-        
+        System.out.println("Waiting...");
         if(args.length > 0) {
             switch (args[0]) {
                 case "map":
