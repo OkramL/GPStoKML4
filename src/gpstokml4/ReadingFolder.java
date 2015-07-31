@@ -24,8 +24,9 @@ import java.util.logging.Logger;
 public class ReadingFolder {
     private static final Path SOURCE_DIRECTORY = Paths.get(System.getProperty("user.dir") + "/data_files");
     private static final String LOGFILE_EXTENSION = "txt";
-    private static final double KNOTS_TO_KMH = 1.852;
-    private static final double SPEED_LIMIT = 94;
+    //private static final double KNOTS_TO_KMH = 1.852;
+    //private static final double SPEED_LIMIT_KMH = 94;
+    public static final double SPEED_LIMIT_KNOTS = 50.76; // including
     
     /* Get all GPS files from source folder */
     public List<Datapoint> importSourceFiles() {
@@ -42,19 +43,18 @@ public class ReadingFolder {
         return null;
     }
     
-    /* Read files and parse correct lines. For MAP */
-    public List<Datapoint> sourceFileReader(List Datapoint) {
+    public List<Datapoint> sourceFileBothReader(List datapoints, double speed) {
         List<Datapoint> pointsFromFile = new ArrayList<>(); // Failide nimed
-        for(int i=0; i < Datapoint.size(); i++){
-            String file = Datapoint.get(i).toString();            
+        for(int i=0; i < datapoints.size(); i++){
+            String file = datapoints.get(i).toString();            
             Path path = Paths.get(file);
-            String fileName = path.getFileName().toString();    // Only filename, no folders
+            String fileName = path.getFileName().toString();    // Only filename, no folder
             try {
                 BufferedReader br = Files.newBufferedReader(path);
                 String line;
                 while ((line = br.readLine()) != null) {
                     String[] split = line.split(",");
-                    if(split[0].toUpperCase().equals("A")) {
+                    if(split[0].toUpperCase().equals("A") && Double.valueOf(split[7]) >= speed) {
                         int year = 2000 + Integer.valueOf(split[1].substring(4,6));
                         int month = Integer.valueOf(split[1].substring(2,4));
                         int day = Integer.valueOf(split[1].substring(0,2));
@@ -73,38 +73,7 @@ public class ReadingFolder {
             }
         }
         return pointsFromFile;
+        
     }
     
-      /* Read files and parse correct lines For SPEED*/
-    public List<Datapoint> sourceFileSpeedReader(List Datapoint) {
-        List<Datapoint> pointsFromFile = new ArrayList<>(); // Failide nimed
-        for(int i=0; i < Datapoint.size(); i++){
-            String file = Datapoint.get(i).toString();            
-            Path path = Paths.get(file);
-            String fileName = path.getFileName().toString();    // Only filename, no folders
-            try {
-                BufferedReader br = Files.newBufferedReader(path);
-                String line;
-                while ((line = br.readLine()) != null) {
-                    String[] split = line.split(",");
-                    if(split[0].toUpperCase().equals("A") && Double.valueOf(split[7]) >= 50.76) {
-                        int year = 2000 + Integer.valueOf(split[1].substring(4,6));
-                        int month = Integer.valueOf(split[1].substring(2,4));
-                        int day = Integer.valueOf(split[1].substring(0,2));
-                        int hour = Integer.valueOf(split[2].substring(0, 2));
-                        int minute = Integer.valueOf(split[2].substring(2, 4));
-                        int second = Integer.valueOf(split[2].substring(4, 6));
-                        int millisecond = Integer.valueOf(split[2].substring(7, 10));
-                        LocalDateTime timestamp = LocalDateTime.of(year, month, day, hour, minute, second, millisecond);
-                        double latitude = Double.valueOf(split[3].substring(0,3)) + Double.valueOf(split[3].substring(3)) / 60;
-                        double longitude = Double.valueOf(split[5].substring(0,4)) + Double.valueOf(split[5].substring(4)) / 60;
-                        pointsFromFile.add(new Datapoint(latitude, longitude, timestamp, fileName));
-                    }
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(ReadingFolder.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return pointsFromFile;
-    }
 }

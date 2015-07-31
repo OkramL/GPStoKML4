@@ -27,7 +27,7 @@ public class GPStoKML4 {
                         ReadingFolder sp = new ReadingFolder();
                         List<Datapoint> myFiles = sp.importSourceFiles();           // My files
                         if(myFiles.size() > 0) {
-                            List<Datapoint> myFullList = sp.sourceFileReader(myFiles);  // All correct lines from source files
+                            List<Datapoint> myFullList = sp.sourceFileBothReader(myFiles,0);  // All correct lines from source files
                             KMLGenerator.build(myFullList);
                         } else {
                             System.out.println("No log files found!");
@@ -38,7 +38,7 @@ public class GPStoKML4 {
                         ReadingFolder sp = new ReadingFolder();
                         List<Datapoint> myFiles = sp.importSourceFiles();           // My files
                         if(myFiles.size() > 0) {
-                            List<Datapoint> myFullList = sp.sourceFileSpeedReader(myFiles);  // All correct lines from source files
+                            List<Datapoint> myFullList = sp.sourceFileBothReader(myFiles, ReadingFolder.SPEED_LIMIT_KNOTS);  // All correct lines from source files
                             KMLGenerator.speed(myFullList);
                         } else {
                             System.out.println("No log files found!");
@@ -49,9 +49,9 @@ public class GPStoKML4 {
                     ReadingFolder sp = new ReadingFolder();
                         List<Datapoint> myFiles = sp.importSourceFiles();           // My files
                         if(myFiles.size() > 0) {
-                            List<Datapoint> myFullList = sp.sourceFileReader(myFiles);  // All correct lines from source files
+                            List<Datapoint> myFullList = sp.sourceFileBothReader(myFiles, 0);  // All correct lines from source files
                             KMLGenerator.build(myFullList);
-                            List<Datapoint> myFullSpeedList = sp.sourceFileSpeedReader(myFiles);  // All correct lines from source files
+                            List<Datapoint> myFullSpeedList = sp.sourceFileBothReader(myFiles, ReadingFolder.SPEED_LIMIT_KNOTS);  // All correct lines from source files
                             KMLGenerator.speed(myFullSpeedList);
                         } else {
                             System.out.println("No log files found!");
@@ -84,7 +84,7 @@ public class GPStoKML4 {
             ReadingFolder sp = new ReadingFolder();
             List<Datapoint> myFiles = sp.importSourceFiles();           // My files
             if(myFiles.size() > 0) {
-                List<Datapoint> myFullList = sp.sourceFileReader(myFiles);  // All correct lines from source files
+                List<Datapoint> myFullList = sp.sourceFileBothReader(myFiles, 0);  // All correct lines from source files
                 KMLGenerator.build(myFullList);                
             } else {
                 System.out.println("No log files found!");
