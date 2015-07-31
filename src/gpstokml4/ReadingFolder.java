@@ -31,6 +31,7 @@ public class ReadingFolder {
     /* Get all GPS files from source folder */
     public List<Datapoint> importSourceFiles() {
         // List<Datapoint> allDatapoints = new ArrayList<>();
+ 
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(SOURCE_DIRECTORY, "*." + LOGFILE_EXTENSION)) {
             ArrayList myFiles = new ArrayList<>();
             for (Path sourceFilePath : directoryStream) {
@@ -40,6 +41,7 @@ public class ReadingFolder {
         } catch (IOException ex) {
             Logger.getLogger(ReadingFolder.class.getName()).log(Level.SEVERE, null, ex);
         } 
+        
         return null;
     }
     
