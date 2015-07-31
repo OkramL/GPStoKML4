@@ -128,4 +128,6 @@ public class KMLGenerator {
     public static boolean isDateChanged(LocalDateTime previous, LocalDateTime current) {
         return !(previous.getDayOfYear() == current.getDayOfYear() && previous.getYear() == current.getYear());
     }
+    
+    
 }
