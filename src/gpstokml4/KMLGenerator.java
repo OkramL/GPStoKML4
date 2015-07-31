@@ -24,14 +24,18 @@ import java.util.logging.Logger;
 public class KMLGenerator {
     
     private static final Path SOURCE_DIRECTORY = Paths.get(System.getProperty("user.dir"));
-    private static final String OUTPUT_FILENAME = "Kaameraga.kml";
-    private static final String OUTPUT_SPEED_FILENAME = "KaameragaSpeed.kml";
+    private static final String OUTPUT_FILENAME = "CameraMap.kml";
+    private static final String OUTPUT_SPEED_FILENAME = "CameraSpeed.kml";
     
     
     private static final String KMLFileHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
-                + "<Document id=\"\"><name>Kaameraga v.4</name>\n" 
-                + "<description>Autoga tehtud sõidud, kui kaamera töötab</description>";
+                + "<Document id=\"\"><name>GPStoKML Map v.4</name>\n" 
+                + "<description>Draw lines to map.</description>";
+    private static final String KMLSpeedFileHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
+                + "<Document id=\"\"><name>GPStoKML Speed v.4</name>\n" 
+                + "<description>Speed bigger than 94 km/h.</description>";
     private static final String KMLFileFooter = "</Document>\n"
                 + "</kml>";
     private static final String PointStartingString = "<Placemark>\n"
@@ -63,7 +67,7 @@ public class KMLGenerator {
         try {
             PrintWriter writer = new PrintWriter(SOURCE_DIRECTORY+"/"+OUTPUT_FILENAME, "UTF-8");
             writer.println(KMLFileHeader);            
-            writer.printf(PointStartingString, placemarks.get(0).getTimestamp());
+            writer.printf(PointStartingString, placemarks.get(0).getFilename());
             for(int i = 0; i < placemarks.size(); i++) {
                 if(i > 0) {
                     LocalDateTime previousTime = placemarks.get(i-1).getTimestamp();
@@ -71,7 +75,7 @@ public class KMLGenerator {
                     if(previousTime.plusMinutes(5).isBefore(currentTime)) {
                         //System.out.println(previousTime+" "+currentTime);
                         writer.println(PointEndingString);
-                        writer.printf(PointStartingString, placemarks.get(i).getTimestamp());
+                        writer.printf(PointStartingString, placemarks.get(i).getFilename());
                         writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                     } else {
                        writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
@@ -93,8 +97,8 @@ public class KMLGenerator {
     public static void speed(List<Datapoint> placemarks) {
         try {
             PrintWriter writer = new PrintWriter(SOURCE_DIRECTORY+"/"+OUTPUT_SPEED_FILENAME, "UTF-8");
-            writer.println(KMLFileHeader);            
-            writer.printf(PointStartingSpeedString, placemarks.get(0).getTimestamp());
+            writer.println(KMLSpeedFileHeader);            
+            writer.printf(PointStartingSpeedString, placemarks.get(0).getFilename());
             for(int i = 0; i < placemarks.size(); i++) {
                 if(i > 0) {
                     LocalDateTime previousTime = placemarks.get(i-1).getTimestamp();
@@ -102,7 +106,7 @@ public class KMLGenerator {
                     if(previousTime.plusSeconds(1).isBefore(currentTime)) {
                         //System.out.println(previousTime+" "+currentTime);
                         writer.println(PointEndingString);
-                        writer.printf(PointStartingSpeedString, placemarks.get(i).getTimestamp());
+                        writer.printf(PointStartingSpeedString, placemarks.get(i).getFilename());
                         writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                     } else {
                        writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");

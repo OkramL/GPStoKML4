@@ -23,8 +23,7 @@ public class GPStoKML4 {
         
         if(args.length > 0) {
             switch (args[0]) {
-                case "map":
-                    {
+                case "map": {
                         ReadingFolder sp = new ReadingFolder();
                         List<Datapoint> myFiles = sp.importSourceFiles();           // My files
                         if(myFiles.size() > 0) {
@@ -32,10 +31,10 @@ public class GPStoKML4 {
                             KMLGenerator.build(myFullList);
                         } else {
                             System.out.println("No log files found!");
-                        }       break;
-                    }
-                case "speed":
-                    {
+                        }  
+                }
+                break;
+                case "speed": {
                         ReadingFolder sp = new ReadingFolder();
                         List<Datapoint> myFiles = sp.importSourceFiles();           // My files
                         if(myFiles.size() > 0) {
@@ -43,8 +42,38 @@ public class GPStoKML4 {
                             KMLGenerator.speed(myFullList);
                         } else {
                             System.out.println("No log files found!");
-                }       break;
-                    }
+                        }                       
+                }    
+                break;
+                case "both":
+                    ReadingFolder sp = new ReadingFolder();
+                        List<Datapoint> myFiles = sp.importSourceFiles();           // My files
+                        if(myFiles.size() > 0) {
+                            List<Datapoint> myFullList = sp.sourceFileReader(myFiles);  // All correct lines from source files
+                            KMLGenerator.build(myFullList);
+                            List<Datapoint> myFullSpeedList = sp.sourceFileSpeedReader(myFiles);  // All correct lines from source files
+                            KMLGenerator.speed(myFullSpeedList);
+                        } else {
+                            System.out.println("No log files found!");
+                        }                       
+                break;
+                case "-h":                    
+                    System.out.println("GPStoKML version 4.0");
+                    System.out.println("(c) 2015 Marko Livental ");
+                    System.out.println("Generates map or speed KML file from camera Mini 0803 log files.");
+                    System.out.println("\n\rSwitces:");
+                    System.out.println("-h      - help");
+                    System.out.println("-v      - version info");
+                    System.out.println("map     - default. Generates map file");
+                    System.out.println("speed   - generates speed file where speed bigger than 94 km/h");
+                    System.out.println("both    - generates map and speed files once.");
+                    System.out.println("\n\rNB! Put camera log files to folder data_files. "
+                            + "Files CameraMap.kml and CameraSpeed.kml in program root folder.");
+                    System.out.println("\n\rNB 2! Every time overwrites file CameraMap.kml and/or CameraSpeed.kml.");
+                break;
+                case "-v":
+                    System.out.println("GPStoKML version 4.0");
+                break;
                 default:
                     System.out.println("Wrong argument.");
                     break;
