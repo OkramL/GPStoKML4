@@ -25,7 +25,8 @@ public class KMLGenerator {
     
     private static final Path SOURCE_DIRECTORY = Paths.get(System.getProperty("user.dir"));
     private static final String OUTPUT_FILENAME = "Kaameraga.kml";
-    private static final String TXT_OUTPUT_FILENAME = "Kaameraga.txt";
+    private static final String OUTPUT_SPEED_FILENAME = "KaameragaSpeed.kml";
+    
     
     private static final String KMLFileHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
@@ -43,6 +44,17 @@ public class KMLGenerator {
                 + "</Style>\n"
                 + "<LineString id=\"\">\n"
                 + "<coordinates>";
+    private static final String PointStartingSpeedString = "<Placemark>\n"
+                + "<name>%s</name>\n"
+                + "<Style> \n"
+                + "<LineStyle>\n"
+                + "<color>FF0000FF</color>\n"
+                + "<width>3</width>\n"
+                + "</LineStyle>\n"
+                + "</Style>\n"
+                + "<LineString id=\"\">\n"
+                + "<coordinates>";
+    
     private static final String PointEndingString = "</coordinates>\n"
                 + "</LineString>\n"
                 + "</Placemark>";
@@ -78,6 +90,36 @@ public class KMLGenerator {
         }        
     }
     
+    public static void speed(List<Datapoint> placemarks) {
+        try {
+            PrintWriter writer = new PrintWriter(SOURCE_DIRECTORY+"/"+OUTPUT_SPEED_FILENAME, "UTF-8");
+            writer.println(KMLFileHeader);            
+            writer.printf(PointStartingSpeedString, placemarks.get(0).getTimestamp());
+            for(int i = 0; i < placemarks.size(); i++) {
+                if(i > 0) {
+                    LocalDateTime previousTime = placemarks.get(i-1).getTimestamp();
+                    LocalDateTime currentTime = placemarks.get(i).getTimestamp();
+                    if(previousTime.plusSeconds(1).isBefore(currentTime)) {
+                        //System.out.println(previousTime+" "+currentTime);
+                        writer.println(PointEndingString);
+                        writer.printf(PointStartingSpeedString, placemarks.get(i).getTimestamp());
+                        writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
+                    } else {
+                       writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
+                    }
+                } else {
+                    writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
+                }
+            }
+            writer.println(PointEndingString);
+            writer.println(KMLFileFooter);
+            writer.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(KMLGenerator.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(KMLGenerator.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+    }
     
     public static boolean isDateChanged(LocalDateTime previous, LocalDateTime current) {
         return !(previous.getDayOfYear() == current.getDayOfYear() && previous.getYear() == current.getYear());

@@ -22,19 +22,32 @@ public class GPStoKML4 {
         final long startTime = System.currentTimeMillis();
         
         if(args.length > 0) {
-            if(args[0].equals("map")) {
-                ReadingFolder sp = new ReadingFolder();
-                List<Datapoint> myFiles = sp.importSourceFiles();           // My files
-                if(myFiles.size() > 0) {
-                    List<Datapoint> myFullList = sp.sourceFileReader(myFiles);  // All correct lines from source files
-                    KMLGenerator.build(myFullList);                    
-                } else {
-                    System.out.println("No log files found!");
-                }      
-            } else if(args[0].equals("speed")) {
-                System.out.println("Speed argument not work.");
-            } else {
+            switch (args[0]) {
+                case "map":
+                    {
+                        ReadingFolder sp = new ReadingFolder();
+                        List<Datapoint> myFiles = sp.importSourceFiles();           // My files
+                        if(myFiles.size() > 0) {
+                            List<Datapoint> myFullList = sp.sourceFileReader(myFiles);  // All correct lines from source files
+                            KMLGenerator.build(myFullList);
+                        } else {
+                            System.out.println("No log files found!");
+                        }       break;
+                    }
+                case "speed":
+                    {
+                        ReadingFolder sp = new ReadingFolder();
+                        List<Datapoint> myFiles = sp.importSourceFiles();           // My files
+                        if(myFiles.size() > 0) {
+                            List<Datapoint> myFullList = sp.sourceFileSpeedReader(myFiles);  // All correct lines from source files
+                            KMLGenerator.speed(myFullList);
+                        } else {
+                            System.out.println("No log files found!");
+                }       break;
+                    }
+                default:
                     System.out.println("Wrong argument.");
+                    break;
             }
         } else {
             System.out.println("No command line arguments!");
