@@ -19,12 +19,12 @@ public class GPStoKML4 {
     public static void main(String[] args) {
         // TODO code application logic here
         final long startTime = System.currentTimeMillis();
-        System.out.println("Waiting...");
-        
-        ReadingFolder sp = new ReadingFolder();
-        List<Datapoint> myFiles = sp.importSourceFiles();  // My files
-        if(args.length > 0) {                     
-            switch (args[0]) {
+               
+        if(args.length > 0) {  
+            System.out.println("Waiting...");
+            ReadingFolder sp = new ReadingFolder();
+            List<Datapoint> myFiles = sp.importSourceFiles();  // My files
+            switch (args[0]) {                
                 case "map": {
                     if(myFiles.size() > 0) {
                         List<Datapoint> myFullList = sp.sourceFileBothReader(myFiles,0);  // All correct lines from source files
@@ -53,22 +53,20 @@ public class GPStoKML4 {
                         System.out.println("No log files found!");
                     }                       
                 break;
-                case "-h":                    
+                case "-h":
+                case "-v":
                     System.out.println("GPStoKML version 4.0");
                     System.out.println("(c) 2015 Marko Livental ");
                     System.out.println("Generates map or speed KML file from camera Mini 0803 log files.");
                     System.out.println("\n\rSwitces:");
-                    System.out.println("-h      - help");
-                    System.out.println("-v      - version info");
                     System.out.println("map     - default. Generates map file");
                     System.out.println("speed   - generates speed file where speed bigger than 94 km/h");
                     System.out.println("both    - generates map and speed files once.");
+                    System.out.println("-h      - help");
+                    System.out.println("-v      - version info");                    
                     System.out.println("\n\rNB! Put camera log files to folder data_files. "
                             + "Files CameraMap.kml and CameraSpeed.kml in program root folder.");
                     System.out.println("\n\rNB 2! Every time overwrites file CameraMap.kml and/or CameraSpeed.kml.");
-                break;
-                case "-v":
-                    System.out.println("GPStoKML version 4.0");
                 break;
                 default:
                     System.out.println("Wrong argument.");
@@ -77,6 +75,8 @@ public class GPStoKML4 {
         } else {
             System.out.println("No command line arguments!");
             System.out.println("Create map kml file.");
+            ReadingFolder sp = new ReadingFolder();
+            List<Datapoint> myFiles = sp.importSourceFiles();  // My files
             if(myFiles.size() > 0) {
                 List<Datapoint> myFullList = sp.sourceFileBothReader(myFiles, 0);  // All correct lines from source files
                 KMLGenerator.build(myFullList);                
@@ -87,6 +87,5 @@ public class GPStoKML4 {
         final long endTime = System.currentTimeMillis();
         System.out.println("Working time: " + (endTime - startTime) + "ms.");
         System.out.println("DONE!");
-    }
-    
+    }    
 }
