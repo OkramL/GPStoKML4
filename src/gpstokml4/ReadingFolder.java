@@ -50,7 +50,8 @@ public class ReadingFolder {
         for(int i=0; i < datapoints.size(); i++){
             String file = datapoints.get(i).toString();            
             Path path = Paths.get(file);
-            String fileName = path.getFileName().toString();    // Only filename, no folder
+            // Only filename, no folder, no extension. This is date like 2015-12-31 YYYY-MM-DD
+            String fileName = path.getFileName().toString().substring(0, 10);    
             try {
                 BufferedReader br = Files.newBufferedReader(path);
                 String line;
