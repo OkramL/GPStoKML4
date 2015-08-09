@@ -72,23 +72,23 @@ public class KMLGenerator {
             PrintWriter writer = new PrintWriter(SOURCE_DIRECTORY+"/"+OUTPUT_FILENAME, "UTF-8");
             writer.println(KMLFileHeader);            
             writer.printf(KMLFileFolderStart, placemarks.get(0).getFilename());
-            writer.printf(PointStartingString, placemarks.get(0).getTimestamp());            
+            writer.printf(PointStartingString, placemarks.get(0).getTimestamp2());            
             for(int i = 0; i < placemarks.size(); i++) {
                 if(i > 0) {
                     LocalDateTime previousTime = placemarks.get(i-1).getTimestamp();
-                    LocalDateTime currentTime = placemarks.get(i).getTimestamp();
+                    LocalDateTime currentTime = placemarks.get(i).getTimestamp2();
                     if(previousTime.plusMinutes(5).isBefore(currentTime)) {
                         //System.out.println(previousTime+" "+currentTime);
                         /* Prev and current filename is same */
                         if(placemarks.get(i-1).getFilename().equals(placemarks.get(i).getFilename())) {
                             writer.println(PointEndingString);
-                            writer.printf(PointStartingString, placemarks.get(i).getTimestamp());
+                            writer.printf(PointStartingString, placemarks.get(i).getTimestamp2());
                             writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                         } else {
                             writer.println(PointEndingString);
                             writer.println(KMLFileFolderEnd);
                             writer.printf(KMLFileFolderStart, placemarks.get(i).getFilename());
-                            writer.printf(PointStartingString, placemarks.get(i).getTimestamp());
+                            writer.printf(PointStartingString, placemarks.get(i).getTimestamp2());
                             writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                         }
                     } else {
@@ -113,22 +113,22 @@ public class KMLGenerator {
             PrintWriter writer = new PrintWriter(SOURCE_DIRECTORY+"/"+OUTPUT_SPEED_FILENAME, "UTF-8");
             writer.println(KMLSpeedFileHeader);   
             writer.printf(KMLFileFolderStart, placemarks.get(0).getFilename());
-            writer.printf(PointStartingSpeedString, placemarks.get(0).getTimestamp());
+            writer.printf(PointStartingSpeedString, placemarks.get(0).getTimestamp2());
             for(int i = 0; i < placemarks.size(); i++) {
                 if(i > 0) {
-                    LocalDateTime previousTime = placemarks.get(i-1).getTimestamp();
-                    LocalDateTime currentTime = placemarks.get(i).getTimestamp();
+                    LocalDateTime previousTime = placemarks.get(i-1).getTimestamp2();
+                    LocalDateTime currentTime = placemarks.get(i).getTimestamp2();
                     if(previousTime.plusSeconds(1).isBefore(currentTime)) {
                         //System.out.println(previousTime+" "+currentTime);
                         if(placemarks.get(i-1).getFilename().equals(placemarks.get(i).getFilename())) {
                             writer.println(PointEndingString);
-                            writer.printf(PointStartingSpeedString, placemarks.get(i).getTimestamp());
+                            writer.printf(PointStartingSpeedString, placemarks.get(i).getTimestamp2());
                             writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                         } else {
                             writer.println(PointEndingString);
                             writer.println(KMLFileFolderEnd);
                             writer.printf(KMLFileFolderStart, placemarks.get(i).getFilename());
-                            writer.printf(PointStartingSpeedString, placemarks.get(i).getTimestamp());
+                            writer.printf(PointStartingSpeedString, placemarks.get(i).getTimestamp2());
                             writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                         }
                         

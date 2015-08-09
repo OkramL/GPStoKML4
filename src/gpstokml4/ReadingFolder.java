@@ -66,9 +66,10 @@ public class ReadingFolder {
                         int second = Integer.valueOf(split[2].substring(4, 6));
                         int millisecond = Integer.valueOf(split[2].substring(7, 10));
                         LocalDateTime timestamp = LocalDateTime.of(year, month, day, hour, minute, second, millisecond);
+                        LocalDateTime timestamp2 = LocalDateTime.of(year, month, day, hour, minute, second);
                         double latitude = Double.valueOf(split[3].substring(0,3)) + Double.valueOf(split[3].substring(3)) / 60;
                         double longitude = Double.valueOf(split[5].substring(0,4)) + Double.valueOf(split[5].substring(4)) / 60;
-                        pointsFromFile.add(new Datapoint(latitude, longitude, timestamp, fileName));
+                        pointsFromFile.add(new Datapoint(latitude, longitude, timestamp, timestamp2, fileName));
                     }
                 }
             } catch (IOException ex) {
