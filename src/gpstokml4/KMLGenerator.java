@@ -109,44 +109,48 @@ public class KMLGenerator {
     }
     
     public static void speed(List<Datapoint> placemarks) {
-        try {
-            PrintWriter writer = new PrintWriter(SOURCE_DIRECTORY+"/"+OUTPUT_SPEED_FILENAME, "UTF-8");
-            writer.println(KMLSpeedFileHeader);   
-            writer.printf(KMLFileFolderStart, placemarks.get(0).getFilename());
-            writer.printf(PointStartingSpeedString, placemarks.get(0).getTimestamp2());
-            for(int i = 0; i < placemarks.size(); i++) {
-                if(i > 0) {
-                    LocalDateTime previousTime = placemarks.get(i-1).getTimestamp2();
-                    LocalDateTime currentTime = placemarks.get(i).getTimestamp2();
-                    if(previousTime.plusSeconds(1).isBefore(currentTime)) {
-                        //System.out.println(previousTime+" "+currentTime);
-                        if(placemarks.get(i-1).getFilename().equals(placemarks.get(i).getFilename())) {
-                            writer.println(PointEndingString);
-                            writer.printf(PointStartingSpeedString, placemarks.get(i).getTimestamp2());
-                            writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
+        if(placemarks.size() > 0) {
+            try {
+                PrintWriter writer = new PrintWriter(SOURCE_DIRECTORY+"/"+OUTPUT_SPEED_FILENAME, "UTF-8");
+                writer.println(KMLSpeedFileHeader);   
+                writer.printf(KMLFileFolderStart, placemarks.get(0).getFilename());
+                writer.printf(PointStartingSpeedString, placemarks.get(0).getTimestamp2());
+                for(int i = 0; i < placemarks.size(); i++) {
+                    if(i > 0) {
+                        LocalDateTime previousTime = placemarks.get(i-1).getTimestamp();
+                        LocalDateTime currentTime = placemarks.get(i).getTimestamp();
+                        if(previousTime.plusSeconds(1).isBefore(currentTime)) {
+                            //System.out.println(previousTime+" "+currentTime);
+                            if(placemarks.get(i-1).getFilename().equals(placemarks.get(i).getFilename())) {
+                                writer.println(PointEndingString);
+                                writer.printf(PointStartingSpeedString, placemarks.get(i).getTimestamp2());
+                                writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
+                            } else {
+                                writer.println(PointEndingString);
+                                writer.println(KMLFileFolderEnd);
+                                writer.printf(KMLFileFolderStart, placemarks.get(i).getFilename());
+                                writer.printf(PointStartingSpeedString, placemarks.get(i).getTimestamp2());
+                                writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
+                            }
+
                         } else {
-                            writer.println(PointEndingString);
-                            writer.println(KMLFileFolderEnd);
-                            writer.printf(KMLFileFolderStart, placemarks.get(i).getFilename());
-                            writer.printf(PointStartingSpeedString, placemarks.get(i).getTimestamp2());
-                            writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
+                           writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                         }
-                        
                     } else {
-                       writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
+                        writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                     }
-                } else {
-                    writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                 }
+                writer.println(PointEndingString);
+                writer.println(KMLFileFooter);
+                writer.close();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(KMLGenerator.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(KMLGenerator.class.getName()).log(Level.SEVERE, null, ex);
             }
-            writer.println(PointEndingString);
-            writer.println(KMLFileFooter);
-            writer.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(KMLGenerator.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(KMLGenerator.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        } else {
+            System.out.println("No speeding, no correct CameraSpeed.kml file. :)");
+        }
     }
     
     public static boolean isDateChanged(LocalDateTime previous, LocalDateTime current) {

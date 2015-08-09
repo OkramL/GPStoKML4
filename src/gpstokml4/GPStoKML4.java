@@ -72,7 +72,7 @@ public class GPStoKML4 {
                 KMLGenerator.build(myFullList);
             }
             if(doSpeed) {
-                List<Datapoint> myFullSpeedList = sp.sourceFileBothReader(myFiles, ReadingFolder.SPEED_LIMIT_KNOTS);  // All correct lines from source files
+                List<Datapoint> myFullSpeedList = sp.sourceFileBothReader(myFiles, ReadingFolder.SPEED_LIMIT_KNOTS);  // All correct lines from source files                
                 KMLGenerator.speed(myFullSpeedList);
             }
         } else {
