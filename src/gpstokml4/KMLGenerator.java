@@ -11,8 +11,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,9 +34,14 @@ public class KMLGenerator {
                 + "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
                 + "<Document id=\"\"><name>GPStoKML Speed v.4</name>\n" 
                 + "<description>Speed bigger than 94 km/h.</description>";
-    private static final String KMLFileFooter = "</Folder>\n"
+    private static final String KMLFileFooter = ""
+            + "</Folder>\n"
+            + "</Folder>\n"
             + "</Document>\n"
             + "</kml>";
+    private static final String KMLFileMonthStart = "<Folder>\n"
+            + "<name>%s</name>\n";
+    private static final String KMLFileMonthEnd = "</Folder>";
     private static final String KMLFileFolderStart = "<Folder>\n"
             + "<name>%s</name>\n";
     private static final String KMLFileFolderEnd = "</Folder>";
@@ -70,7 +73,8 @@ public class KMLGenerator {
     public static void build(List<Datapoint> placemarks) {
         try {
             PrintWriter writer = new PrintWriter(SOURCE_DIRECTORY+"/"+OUTPUT_FILENAME, "UTF-8");
-            writer.println(KMLFileHeader);            
+            writer.println(KMLFileHeader);  
+            writer.printf(KMLFileMonthStart, placemarks.get(0).getYearWithMonth());
             writer.printf(KMLFileFolderStart, placemarks.get(0).getFilename());
             writer.printf(PointStartingString, placemarks.get(0).getTimestamp2());            
             for(int i = 0; i < placemarks.size(); i++) {
@@ -81,25 +85,35 @@ public class KMLGenerator {
                         //System.out.println(previousTime+" "+currentTime);
                         /* Prev and current filename is same */
                         if(placemarks.get(i-1).getFilename().equals(placemarks.get(i).getFilename())) {
+                            // Kui eelmine ja praegune punkt on sama
                             writer.println(PointEndingString);
                             writer.printf(PointStartingString, placemarks.get(i).getTimestamp2());
                             writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                         } else {
+                            // Punktid ei ole samad
                             writer.println(PointEndingString);
                             writer.println(KMLFileFolderEnd);
-                            writer.printf(KMLFileFolderStart, placemarks.get(i).getFilename());
+                            if(placemarks.get(i).getYearWithMonth() == null ? placemarks.get((i-1)).getYearWithMonth() != null : !placemarks.get(i).getYearWithMonth().equals(placemarks.get((i-1)).getYearWithMonth())) {
+                                writer.println(KMLFileMonthEnd);
+                                writer.printf(KMLFileMonthStart, placemarks.get(i).getYearWithMonth());
+                            }
+                            writer.printf(KMLFileFolderStart, placemarks.get(i).getFilename());                            
                             writer.printf(PointStartingString, placemarks.get(i).getTimestamp2());
                             writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                         }
                     } else {
-                       writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
+                        // Vahe ei ole üle viie minuti
+                        writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                     }
+                    
                 } else {
+                    // Only first time
                     writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                 }
-            }
+            }            
             writer.println(PointEndingString);
             writer.println(KMLFileFooter);
+            
             writer.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(KMLGenerator.class.getName()).log(Level.SEVERE, null, ex);
@@ -113,6 +127,7 @@ public class KMLGenerator {
             try {
                 PrintWriter writer = new PrintWriter(SOURCE_DIRECTORY+"/"+OUTPUT_SPEED_FILENAME, "UTF-8");
                 writer.println(KMLSpeedFileHeader);   
+                writer.printf(KMLFileMonthStart, placemarks.get(0).getYearWithMonth());
                 writer.printf(KMLFileFolderStart, placemarks.get(0).getFilename());
                 writer.printf(PointStartingSpeedString, placemarks.get(0).getTimestamp2());
                 for(int i = 0; i < placemarks.size(); i++) {
@@ -128,6 +143,10 @@ public class KMLGenerator {
                             } else {
                                 writer.println(PointEndingString);
                                 writer.println(KMLFileFolderEnd);
+                                if(placemarks.get(i).getYearWithMonth() == null ? placemarks.get((i-1)).getYearWithMonth() != null : !placemarks.get(i).getYearWithMonth().equals(placemarks.get((i-1)).getYearWithMonth())) {
+                                    writer.println(KMLFileMonthEnd);
+                                    writer.printf(KMLFileMonthStart, placemarks.get(i).getYearWithMonth());
+                                }
                                 writer.printf(KMLFileFolderStart, placemarks.get(i).getFilename());
                                 writer.printf(PointStartingSpeedString, placemarks.get(i).getTimestamp2());
                                 writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");

@@ -16,15 +16,16 @@ public class Datapoint {
     private final double longitude;
     private final LocalDateTime time;
     private final LocalDateTime time2; // no milliseconds
-    private final String fileName; 
-    
+    private final String fileName;
+    private final String yearWithMonth;
 
-    public Datapoint(double latitude, double longitude, LocalDateTime time, LocalDateTime time2, String fileName) {
+    public Datapoint(double latitude, double longitude, LocalDateTime time, LocalDateTime time2, String fileName, String yearWithMonth) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.time = time;
         this.time2 = time2;
         this.fileName = fileName;
+        this.yearWithMonth = yearWithMonth;
     }
 
     public double getLatitude() {
@@ -44,6 +45,9 @@ public class Datapoint {
     
     public String getFilename() {
         return fileName;
+    }    
+    public String getYearWithMonth() {
+        return yearWithMonth;
     }    
 
 }

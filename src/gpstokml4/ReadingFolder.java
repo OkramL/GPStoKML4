@@ -40,8 +40,7 @@ public class ReadingFolder {
             return myFiles;
         } catch (IOException ex) {
             Logger.getLogger(ReadingFolder.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-        
+        }         
         return null;
     }
     
@@ -51,7 +50,9 @@ public class ReadingFolder {
             String file = datapoints.get(i).toString();            
             Path path = Paths.get(file);
             // Only filename, no folder, no extension. This is date like 2015-12-31 YYYY-MM-DD
-            String fileName = path.getFileName().toString().substring(0, 10);    
+            String fileName = path.getFileName().toString().substring(0, 10);
+            String yearWithMonth = fileName.substring(0, 7);    // only YYYY-MM
+            
             try {
                 BufferedReader br = Files.newBufferedReader(path);
                 String line;
@@ -66,10 +67,10 @@ public class ReadingFolder {
                         int second = Integer.valueOf(split[2].substring(4, 6));
                         int millisecond = Integer.valueOf(split[2].substring(7, 10));
                         LocalDateTime timestamp = LocalDateTime.of(year, month, day, hour, minute, second, millisecond);
-                        LocalDateTime timestamp2 = LocalDateTime.of(year, month, day, hour, minute, second);
+                        LocalDateTime timestamp2 = LocalDateTime.of(year, month, day, hour, minute, second);                        
                         double latitude = Double.valueOf(split[3].substring(0,3)) + Double.valueOf(split[3].substring(3)) / 60;
                         double longitude = Double.valueOf(split[5].substring(0,4)) + Double.valueOf(split[5].substring(4)) / 60;
-                        pointsFromFile.add(new Datapoint(latitude, longitude, timestamp, timestamp2, fileName));
+                        pointsFromFile.add(new Datapoint(latitude, longitude, timestamp, timestamp2, fileName, yearWithMonth));
                     }
                 }
             } catch (IOException ex) {
