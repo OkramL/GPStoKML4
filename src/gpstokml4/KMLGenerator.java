@@ -24,7 +24,7 @@ public class KMLGenerator {
     private static final Path SOURCE_DIRECTORY = Paths.get(System.getProperty("user.dir"));
     private static final String OUTPUT_FILENAME = "CameraMap.kml";
     private static final String OUTPUT_SPEED_FILENAME = "CameraSpeed.kml";
-    
+    public static boolean SPEED = true;
     
     private static final String KMLFileHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
@@ -33,7 +33,7 @@ public class KMLGenerator {
     private static final String KMLSpeedFileHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
                 + "<Document id=\"\"><name>GPStoKML Speed v.4</name>\n" 
-                + "<description>Speed bigger than 94 km/h.</description>";
+                + "<description>Speed bigger than " + (ReadingFolder.SPEED_LIMIT_KNOTS * 1.852) + " km/h.</description>";
     private static final String KMLFileFooter = ""
             + "</Folder>\n"
             + "</Folder>\n"
@@ -115,9 +115,7 @@ public class KMLGenerator {
             writer.println(KMLFileFooter);
             
             writer.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(KMLGenerator.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnsupportedEncodingException ex) {
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Logger.getLogger(KMLGenerator.class.getName()).log(Level.SEVERE, null, ex);
         }        
     }
@@ -151,7 +149,6 @@ public class KMLGenerator {
                                 writer.printf(PointStartingSpeedString, placemarks.get(i).getTimestamp2());
                                 writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                             }
-
                         } else {
                            writer.print(placemarks.get(i).getLongitude()+","+placemarks.get(i).getLatitude()+" ");
                         }
@@ -162,13 +159,12 @@ public class KMLGenerator {
                 writer.println(PointEndingString);
                 writer.println(KMLFileFooter);
                 writer.close();
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(KMLGenerator.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UnsupportedEncodingException ex) {
+            } catch (FileNotFoundException | UnsupportedEncodingException ex) {
                 Logger.getLogger(KMLGenerator.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            System.out.println("No speeding, no correct CameraSpeed.kml file. :)");
+            System.out.println("No speeding! ");
+            SPEED = false;
         }
     }
     
